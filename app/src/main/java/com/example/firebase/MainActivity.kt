@@ -1,6 +1,5 @@
 package com.example.firebase
 
-import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,41 +19,52 @@ class MainActivity : AppCompatActivity() {
 
         //Inicializar FireBase Auth
         auth = Firebase.auth
-
+        //Creo el boton para darse de alta
         val darseDeAlta: Button = findViewById(R.id.botonLoguearse)
         darseDeAlta.setOnClickListener{
+            //Declaro la variable de usuario para recojer el texto
             val usuario: EditText = findViewById(R.id.correoUsuario)
+            //Declaro la variable de contraseña para recojer el texto
             val contraseña: EditText = findViewById(R.id.contraseñaUsuario)
+            //Llamo al metodo donde de crear cuenta y le paso de variables el correo y la contraseña
             crearCuenta(usuario.text.toString(),contraseña.text.toString())
         }
+        //creo el boton para darse de alta
         val accederCuenta: Button = findViewById(R.id.botonIniciarsesion)
         accederCuenta.setOnClickListener{
+            //Declaro la variable de usuario para recojer el texto
             val usuario: EditText = findViewById(R.id.correoUsuario)
+            //Declaro la variable de contraseña para recojer el texto
             val contraseña: EditText = findViewById(R.id.contraseñaUsuario)
+            //Llamo al metodo donde accedo a la cuenta y le paso de variables el correo y la contraseña
             accederCuenta(usuario.text.toString(),contraseña.text.toString())
         }
     }
     public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
+        //Compruebe si el usuario ha iniciado sesión (no nulo) y actualice la interfaz de usuario en consecuencia.
         val currentUser = auth.currentUser
         if(currentUser != null){
             reload();
         }
     }
 
+    /**
+     * @param email Correo del usuario
+     * @param password Contraseña del usuario
+     */
     private fun crearCuenta(email: String, password: String) {
         //Crear nuevo usuario
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.i("crear b", "Crear Usuario Bien")
+                    // Iniciar sesión correctamente, actualizar la interfaz de usuario con la información del usuario que inició sesión
+                    Log.i("bien", "Crear Usuario Bien")
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.i("crear m", "Crear Usuario Mal", task.exception)
+                    // Si el inicio de sesión falla, muestre un mensaje al usuario.
+                    Log.i("mal", "Crear Usuario Mal", task.exception)
                     Toast.makeText(baseContext, "Fallo en autenticación.",
                         Toast.LENGTH_SHORT).show()
                     updateUI(null)
@@ -62,26 +72,30 @@ class MainActivity : AppCompatActivity() {
             }
         // [Fin Crear Cuenta]
     }
+    /**
+     * @param email Correo del usuario
+     * @param password Contraseña del usuario
+     */
     private fun accederCuenta (email: String, password: String) {
-        // [START sign_in_with_email]
+        // [acceder a cuenta]
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("bien", "signInWithEmail:success")
+                    // Iniciar sesión correctamente, actualizar la interfaz de usuario con la información del usuario que inició sesión
+                    Log.d("bien", "Acceso correcto")
                     val user = auth.currentUser
                     updateUI(user)
                     Toast.makeText(baseContext, "Bien.",
                         Toast.LENGTH_SHORT).show()
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w("mal", "signInWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
+                    // Si el inicio de sesión falla, muestre un mensaje al usuario.
+                    Log.w("mal", "Acceso fallido", task.exception)
+                    Toast.makeText(baseContext, "Fallo en la autenticacion",
                         Toast.LENGTH_SHORT).show()
                     updateUI(null)
                 }
             }
-        // [END sign_in_with_email]
+        // [Fin de acceso a cuenta]
     }
 
     private fun updateUI(user: FirebaseUser?) {
