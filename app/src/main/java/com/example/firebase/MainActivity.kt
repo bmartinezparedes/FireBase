@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
      * @param email Correo del usuario
      * @param password Contraseña del usuario
      */
+    //Este metodo no funciona bien en el emulador de android pero si cuando lo pruebo en mi telefono
     private fun accederCuenta (email: String, password: String) {
         // [acceder a cuenta]
         auth.signInWithEmailAndPassword(email, password)
